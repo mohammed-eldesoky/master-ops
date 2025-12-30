@@ -8,3 +8,4 @@ export * from './common/user.schema';
 export * from './common/user.repository';
 
 export * from './modorator/modorator.schema';
+export * from './modorator/modorator.repository';
