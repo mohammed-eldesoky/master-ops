@@ -175,6 +175,10 @@ export class AuthService {
 
     await this.customerRepo.update({ email }, { otp, otpExpiration });
   }
+
+ //_______________________________ 5-Forget password _______________________________
+
+
   findAll() {
     return `This action returns all auth`;
   }
