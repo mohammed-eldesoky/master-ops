@@ -5,6 +5,7 @@ const generateMessage = (data) => ({
   required: `${data} is required`,
   created: `${data} created successfully`,
   updated: `${data} updated successfully`,
+  login: `${data} logged in successfully`,
   deleted: `${data} deleted successfully`,
   verifyed: `${data} verified successfully`,
   failed: `${data} failed`,

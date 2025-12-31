@@ -12,6 +12,7 @@ import { CreateAuthDto } from './dto/register.dto';
 import { AuthFactory } from './factory/auth.factory';
 import { messages } from 'src/common';
 import { VerifyDto } from './dto/verify.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +40,16 @@ export class AuthController {
     return {
       message: messages.user.verifyed,
       success: true,
+    };
+  }
+  //________________________________3- Login user_______________________________
+  @Post('/login')
+  async login(@Body() loginDto: LoginDto) {
+    const data = await this.authService.login(loginDto);
+    return {
+      message: messages.user.login,
+      success: true,
+      data: data,
     };
   }
 

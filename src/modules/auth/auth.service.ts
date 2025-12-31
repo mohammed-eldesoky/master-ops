@@ -2,16 +2,26 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/register.dto';
 import { User } from './entities/auth.entity';
-import { CustomerRepository } from 'src/models';
-import { sendMail } from 'src/common';
+import { CustomerRepository, TokenRepository, UserRepository } from 'src/models';
+import { sendMail, TOKEN_TYPE } from 'src/common';
 import { VerifyDto } from './dto/verify.dto';
-
+import { LoginDto } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
-  constructor(private readonly customerRepo: CustomerRepository) {}
+  constructor(
+    private readonly customerRepo: CustomerRepository,
+    private readonly jwtService: JwtService,
+    private readonly tokenRepo: TokenRepository,
+    private readonly configService: ConfigService,
+    private readonly userRepository: UserRepository,
+  ) {}
   //________________________________1-register user_______________________________
   async register(user: User) {
     //1- check if user already exists
@@ -72,6 +82,55 @@ export class AuthService {
       { isVerified: true, $unset: { otp: '', otpExpiration: '' } },
     );
   }
+  //________________________________3- Login user_______________________________
+
+  async login(loginDto: LoginDto) {
+        const { email, password } = loginDto;
+    //check if customer with email exists
+    const customer = await this.userRepository.getOne({ email: email });
+    //fail case customer does not exist
+    if (!customer) {
+      throw new UnauthorizedException('invalid credentials');
+    }
+    //check if password matches
+    const match = await bcrypt.compare(password, customer?.password||'nngf');
+    if (!match) {
+      throw new UnauthorizedException('invalid credentials');
+    }
+
+    // generate access & refresh tokens
+    const payload = {
+      _id: customer._id,
+      email: customer.email,
+      role: 'customer',
+    };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.configService.get('jwt').secret,
+      expiresIn: '15m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get('jwt').secret,
+      expiresIn: '7d',
+    });
+
+    // save tokens to database
+
+      await this.tokenRepo.create({
+        token: refreshToken,
+        user: customer._id,
+        type: TOKEN_TYPE.REFRESH,
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  
+  }
+
   findAll() {
     return `This action returns all auth`;
   }
