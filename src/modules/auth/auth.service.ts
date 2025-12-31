@@ -23,6 +23,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { SendOtpDto } from './dto/send-otp.dto';
+import { ForgetPassDto } from './dto/forget-pass.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -176,9 +177,35 @@ export class AuthService {
     await this.customerRepo.update({ email }, { otp, otpExpiration });
   }
 
- //_______________________________ 5-Forget password _______________________________
-
-
+  //_______________________________ 5-Forget password _______________________________
+  async forgetPassword(forgetPassDto: ForgetPassDto) {
+    const { email, otp, NewPassword } = forgetPassDto;
+    //1-check if user exists
+    const userExist = await this.customerRepo.exist({ email });
+    //fail case
+    if (!userExist) {
+      throw new NotFoundException('User does not exist');
+    }
+    //check if otp matches
+    if (userExist.otp !== otp) {
+      throw new BadRequestException('Invalid OTP');
+    }
+    //check if otp is expired
+    if (
+      !userExist.otpExpiration ||
+      userExist.otpExpiration.getTime() < Date.now()
+    ) {
+      throw new BadRequestException('OTP has expired');
+    }
+    //update password
+    await this.customerRepo.update(
+      { email },
+      {
+        $set: { password: NewPassword },
+        $unset: { otp: '', otpExpiration: '' },
+      },
+    );
+  }
   findAll() {
     return `This action returns all auth`;
   }

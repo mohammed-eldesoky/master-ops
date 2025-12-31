@@ -18,6 +18,7 @@ department :{...generateMessage('Department')},
 token :{...generateMessage('Token')},
 product:{...generateMessage('Product')},
 otp:{...generateMessage('OTP')},
+passWord:{...generateMessage('Password')},
 
 
 }

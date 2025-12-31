@@ -14,6 +14,7 @@ import { messages } from 'src/common';
 import { VerifyDto } from './dto/verify.dto';
 import { LoginDto } from './dto/login.dto';
 import { SendOtpDto } from './dto/send-otp.dto';
+import { ForgetPassDto } from './dto/forget-pass.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -64,6 +65,15 @@ export class AuthController {
     };
   }
 
+  //________________________________5- forget password_______________________________
+  @Patch('/forget-password')
+  async forgetPassword(@Body() forgetPassDto: ForgetPassDto) {
+    await this.authService.forgetPassword(forgetPassDto);
+    return {
+      message: messages.passWord.updated,
+      success: true,
+    };
+  }
   @Get()
   findAll() {
     return this.authService.findAll();
