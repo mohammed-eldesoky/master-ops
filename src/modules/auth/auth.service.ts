@@ -22,7 +22,8 @@ export class AuthService {
       from: 'Master-Ops ',
       to: user.email,
       subject: 'Verify your account',
-      html: `<h1>Hello ${user.userName}, Thank you for registering at our app</h1>`,
+      html: `<h1>Hello ${user.userName}, Thank you for registering at our app</h1>
+      <h3>Your OTP is: <b style="color:green">${user.otp}</b></h3>`,
     });
 
     const { password, otp, otpExpiry, ...userObject } = JSON.parse(
