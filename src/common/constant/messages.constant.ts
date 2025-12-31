@@ -7,6 +7,7 @@ const generateMessage = (data) => ({
   updated: `${data} updated successfully`,
   login: `${data} logged in successfully`,
   deleted: `${data} deleted successfully`,
+  otpSent: `${data} sent successfully`,
   verifyed: `${data} verified successfully`,
   failed: `${data} failed`,
 });
@@ -16,5 +17,7 @@ user :{...generateMessage('User')},
 department :{...generateMessage('Department')},
 token :{...generateMessage('Token')},
 product:{...generateMessage('Product')},
+otp:{...generateMessage('OTP')},
+
 
 }

@@ -13,6 +13,7 @@ import { AuthFactory } from './factory/auth.factory';
 import { messages } from 'src/common';
 import { VerifyDto } from './dto/verify.dto';
 import { LoginDto } from './dto/login.dto';
+import { SendOtpDto } from './dto/send-otp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -50,6 +51,16 @@ export class AuthController {
       message: messages.user.login,
       success: true,
       data: data,
+    };
+  }
+  //________________________________4- send otp_______________________________
+
+  @Post('/send-otp')
+  async sendOtp(@Body() sendotpDto: SendOtpDto) {
+    await this.authService.sendOtp(sendotpDto);
+    return {
+      message: messages.otp.otpSent,
+      success: true,
     };
   }
 

@@ -6,13 +6,23 @@ import {
 } from '@nestjs/common';
 import { CreateAuthDto } from './dto/register.dto';
 import { User } from './entities/auth.entity';
-import { CustomerRepository, TokenRepository, UserRepository } from 'src/models';
-import { sendMail, TOKEN_TYPE } from 'src/common';
+import {
+  CustomerRepository,
+  TokenRepository,
+  UserRepository,
+} from 'src/models';
+import {
+  generateOtp,
+  generateOtpExpiryTime,
+  sendMail,
+  TOKEN_TYPE,
+} from 'src/common';
 import { VerifyDto } from './dto/verify.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import { SendOtpDto } from './dto/send-otp.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -85,7 +95,7 @@ export class AuthService {
   //________________________________3- Login user_______________________________
 
   async login(loginDto: LoginDto) {
-        const { email, password } = loginDto;
+    const { email, password } = loginDto;
     //check if customer with email exists
     const customer = await this.userRepository.getOne({ email: email });
     //fail case customer does not exist
@@ -93,7 +103,7 @@ export class AuthService {
       throw new UnauthorizedException('invalid credentials');
     }
     //check if password matches
-    const match = await bcrypt.compare(password, customer?.password||'nngf');
+    const match = await bcrypt.compare(password, customer?.password || 'nngf');
     if (!match) {
       throw new UnauthorizedException('invalid credentials');
     }
@@ -117,24 +127,54 @@ export class AuthService {
 
     // save tokens to database
 
-      await this.tokenRepo.create({
-        token: refreshToken,
-        user: customer._id,
-        type: TOKEN_TYPE.REFRESH,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      });
+    await this.tokenRepo.create({
+      token: refreshToken,
+      user: customer._id,
+      type: TOKEN_TYPE.REFRESH,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    });
 
     return {
       accessToken,
       refreshToken,
     };
-  
   }
-//________________________________3- Login user_______________________________
+  //________________________________4- Send OTP_______________________________
 
-async sendOtp(){
-  
-}
+  async sendOtp(sendotpDto: SendOtpDto) {
+    const { email } = sendotpDto;
+    //1- check if user exists
+    const userExist = await this.customerRepo.exist({ email });
+    //fail case
+    if (!userExist) {
+      throw new NotFoundException('User does not exist');
+    }
+    //check if user (soft deleted)
+    if (userExist.isDeleted) {
+      throw new BadRequestException('User iS deleted');
+    }
+    // check ban
+    if (userExist.banUntil && userExist.banUntil.getTime() > Date.now()) {
+      const remaining =
+        Math.ceil(userExist.banUntil.getTime() - Date.now()) / 1000;
+      throw new BadRequestException(
+        `User is banned , Try again after ${remaining}`,
+      );
+    }
+
+    const otp = generateOtp();
+    const otpExpiration = generateOtpExpiryTime(10); // 10 minutes
+
+    sendMail({
+      from: 'Master-Ops ',
+      to: userExist.email,
+      subject: 'Verify your account',
+      html: `<h1>Hello ${userExist.userName}</h1>
+  <h3>Your OTP is: <b style="color:green">${otp}</b></h3>`,
+    });
+
+    await this.customerRepo.update({ email }, { otp, otpExpiration });
+  }
   findAll() {
     return `This action returns all auth`;
   }
