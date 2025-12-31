@@ -6,6 +6,7 @@ const generateMessage = (data) => ({
   created: `${data} created successfully`,
   updated: `${data} updated successfully`,
   deleted: `${data} deleted successfully`,
+  verifyed: `${data} verified successfully`,
   failed: `${data} failed`,
 });
 

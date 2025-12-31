@@ -9,3 +9,6 @@ export * from './common/user.repository';
 
 export * from './modorator/modorator.schema';
 export * from './modorator/modorator.repository';
+
+export * from './token/token.schema';
+export * from './token/token.repository';

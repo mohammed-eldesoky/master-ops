@@ -1,13 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAuthDto } from './dto/register.dto';
 import { User } from './entities/auth.entity';
 import { CustomerRepository } from 'src/models';
 import { sendMail } from 'src/common';
+import { VerifyDto } from './dto/verify.dto';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly customerRepo: CustomerRepository) {}
-
+  //________________________________1-register user_______________________________
   async register(user: User) {
     //1- check if user already exists
     const userExists = await this.customerRepo.exist({ email: user.email });
@@ -33,6 +38,40 @@ export class AuthService {
     return userObject;
   }
 
+  //________________________________2- Verify user_______________________________
+
+  async verify(verifyDto: VerifyDto) {
+    const { email, otp } = verifyDto;
+    //1-check if user exists
+    const userExist = await this.customerRepo.exist({ email });
+    //fail case
+    if (!userExist) {
+      throw new NotFoundException('User does not exist');
+    }
+    //2-check if user is already verified
+    if (userExist.isVerified) {
+      throw new BadRequestException('User is already verified');
+    }
+    //3-check if otp matches
+
+    if (userExist.otp !== otp) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    //4-check if otp is expired
+    if (
+      !userExist.otpExpiration ||
+      userExist.otpExpiration.getTime() < Date.now()
+    ) {
+      throw new BadRequestException('OTP has expired');
+    }
+
+    //5-verify user
+    await this.customerRepo.update(
+      { email },
+      { isVerified: true, $unset: { otp: '', otpExpiration: '' } },
+    );
+  }
   findAll() {
     return `This action returns all auth`;
   }
