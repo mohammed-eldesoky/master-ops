@@ -10,3 +10,8 @@ export enum USER_AGENT {
     facebook = 'facebook',
   
 }
+
+export enum TOKEN_TYPE {
+    REFRESH = 'refresh',
+    ACCESS = 'access',
+}
