@@ -130,7 +130,11 @@ export class AuthService {
     };
   
   }
+//________________________________3- Login user_______________________________
 
+async sendOtp(){
+  
+}
   findAll() {
     return `This action returns all auth`;
   }
