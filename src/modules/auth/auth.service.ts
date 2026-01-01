@@ -24,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { SendOtpDto } from './dto/send-otp.dto';
 import { ForgetPassDto } from './dto/forget-pass.dto';
+import { UpdatePassDto } from './dto/update-pass.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -206,19 +207,28 @@ export class AuthService {
       },
     );
   }
-  findAll() {
-    return `This action returns all auth`;
-  }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  // update(id: number, updateAuthDto: UpdateAuthDto) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  //_______________________________ 6-Update password _______________________________
+  async updatePassword(updatePassDto: UpdatePassDto, user: any) {
+    const { oldPassword, newPassword } = updatePassDto;
+    //1-check if user exists
+    const userExist = await this.userRepository.getOne({ _id: user._id });
+    //fail case
+    if (!userExist) {
+      throw new NotFoundException('User does not exist');
+    }
+    //2-check if old password matches
+    const match = await bcrypt.compare(
+      oldPassword,
+      userExist?.password || 'nngf',
+    );
+    if (!match) {
+      throw new BadRequestException('Invalid old password');
+    }
+    //3-update password
+    await this.userRepository.update(
+      { _id: user._id },
+      { password: newPassword },
+    );
   }
 }

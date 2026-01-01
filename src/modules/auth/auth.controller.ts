@@ -15,6 +15,7 @@ import { VerifyDto } from './dto/verify.dto';
 import { LoginDto } from './dto/login.dto';
 import { SendOtpDto } from './dto/send-otp.dto';
 import { ForgetPassDto } from './dto/forget-pass.dto';
+import { UpdatePassDto } from './dto/update-pass.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -74,23 +75,13 @@ export class AuthController {
       success: true,
     };
   }
-  @Get()
-  findAll() {
-    return this.authService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-  //   return this.authService.update(+id, updateAuthDto);
-  // }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  //________________________________6- update password_______________________________
+  @Patch('/update-password')
+  async updatePassword(@Body() updatePassDto: UpdatePassDto, user: any) {
+    await this.authService.updatePassword(updatePassDto,user);
+    return {
+      message: messages.passWord.updated,
+      success: true,
+    };
   }
 }
