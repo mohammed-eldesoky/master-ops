@@ -10,7 +10,7 @@ import {
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/register.dto';
 import { AuthFactory } from './factory/auth.factory';
-import { messages } from 'src/common';
+import { Auth, messages, User } from 'src/common';
 import { VerifyDto } from './dto/verify.dto';
 import { LoginDto } from './dto/login.dto';
 import { SendOtpDto } from './dto/send-otp.dto';
@@ -18,6 +18,7 @@ import { ForgetPassDto } from './dto/forget-pass.dto';
 import { UpdatePassDto } from './dto/update-pass.dto';
 
 @Controller('auth')
+
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
@@ -39,7 +40,7 @@ export class AuthController {
   //________________________________2- Verify user_______________________________
   @Post('/verify')
   async verify(@Body() verifyDto: VerifyDto) {
-   await this.authService.verify(verifyDto);
+    await this.authService.verify(verifyDto);
     return {
       message: messages.user.verifyed,
       success: true,
@@ -77,8 +78,12 @@ export class AuthController {
   }
   //________________________________6- update password_______________________________
   @Patch('/update-password')
-  async updatePassword(@Body() updatePassDto: UpdatePassDto, user: any) {
-    await this.authService.updatePassword(updatePassDto,user);
+  @Auth(['Customer', 'Admin', 'Modorator'])
+  async updatePassword(
+    @Body() updatePassDto: UpdatePassDto,
+    @User() user: any,
+  ) {
+    await this.authService.updatePassword(updatePassDto, user);
     return {
       message: messages.passWord.updated,
       success: true,

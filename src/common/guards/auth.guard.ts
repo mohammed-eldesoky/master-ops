@@ -39,7 +39,7 @@ export class AuthGuard implements CanActivate {
       }>(authorization, { secret: this.configService.get('jwt').secret });
 
       //check if payload exists
-      const userExist = this.userRepo.exist({
+      const userExist = await this.userRepo.exist({
         _id: new Types.ObjectId(payload._id),
       });
       if (!userExist) {
