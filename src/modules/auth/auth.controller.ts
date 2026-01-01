@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Headers,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/register.dto';
@@ -87,6 +88,16 @@ export class AuthController {
     return {
       message: messages.passWord.updated,
       success: true,
+    };
+  }
+   //________________________________7- refresh token_______________________________
+  @Post('/refresh-token')
+  async refreshToken( @Headers('refreshToken') refreshToken: string) {
+    const data = await this.authService.refreshToken(refreshToken);
+    return {
+      message: messages.token.refresh,
+      success: true,
+      data: data,
     };
   }
 }

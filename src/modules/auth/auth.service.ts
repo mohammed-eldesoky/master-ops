@@ -209,6 +209,7 @@ export class AuthService {
   }
 
   //_______________________________ 6-Update password _______________________________
+
   async updatePassword(updatePassDto: UpdatePassDto, user: any) {
     const { oldPassword, newPassword } = updatePassDto;
     //1-check if user exists
@@ -230,5 +231,52 @@ export class AuthService {
       { _id: user._id },
       { password: newPassword },
     );
+  }
+
+  //________________________________7- Refresh token_______________________________
+  async refreshToken(oldRefreshToken: string) {
+    if (!oldRefreshToken) {
+      throw new UnauthorizedException('Refresh token missing');
+    }
+    //check if token exists in db
+    const tokenExist = await this.tokenRepo.getOne({
+      token: oldRefreshToken,
+      type: TOKEN_TYPE.REFRESH,
+      expiresAt: { $gt: new Date() },
+    });
+    if (!tokenExist) {
+      throw new UnauthorizedException('Invalid refresh token or expired');
+    }
+    //secret key
+    const secret = this.configService.get('jwt').secret;
+    //verify token
+    const payload = this.jwtService.verify(oldRefreshToken, {
+      secret: secret,
+    });
+
+    // rotate refresh token
+    await this.tokenRepo.delete({ _id: tokenExist._id });
+
+    const newAccessToken = this.jwtService.sign(
+      { _id: payload._id, role: payload.role },
+      { secret: secret, expiresIn: '15m' },
+    );
+
+    const newRefreshToken = this.jwtService.sign(
+      { _id: payload._id },
+      { secret: secret, expiresIn: '7d' },
+    );
+
+    await this.tokenRepo.create({
+      token: newRefreshToken,
+      user: payload._id,
+      type: 'refresh',
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   }
 }

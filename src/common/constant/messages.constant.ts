@@ -9,6 +9,7 @@ const generateMessage = (data) => ({
   deleted: `${data} deleted successfully`,
   otpSent: `${data} sent successfully`,
   verifyed: `${data} verified successfully`,
+  refresh: `${data} refreshed successfully`,
   failed: `${data} failed`,
 });
 
