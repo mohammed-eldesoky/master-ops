@@ -14,7 +14,7 @@ import { Auth, messages, User } from 'src/common';
 import { CategoryFactory } from './factory/category.factory';
 
 @Controller('category')
-@Auth(['Admin', 'Modorator'])
+
 export class CategoryController {
   constructor(
     private readonly categoryService: CategoryService,
@@ -22,6 +22,7 @@ export class CategoryController {
   ) {}
   //_______________________________1- create category _____________________________//
   @Post()
+  @Auth(['Admin', 'Modorator'])
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
     @User() user: any,
@@ -38,7 +39,7 @@ export class CategoryController {
     };
   }
   //_______________________________2- update category _____________________________//
-
+@Auth(['Admin', 'Modorator'])
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -58,15 +59,21 @@ export class CategoryController {
       data: data,
     };
   }
+  //_______________________________3- get specific category _____________________________//
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const data =  await this.categoryService.getCategory(id);
+    return {
+      message: messages.category.fetched,
+      success: true,
+      data: data,
+    };
+  }
 
   @Get()
   findAll() {
     return this.categoryService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
   }
 
   @Delete(':id')

@@ -3,6 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategortyRepository } from 'src/models';
 import { Category } from './entities/category.entity';
+import strict from 'assert/strict';
 
 @Injectable()
 export class CategoryService {
@@ -33,14 +34,24 @@ async  update(id: string, category:Category) {
   return await this.categoryRepository.update({ _id: id }, category);
   }
 
+   //_______________________________3- get specific category _____________________________//
+ async getCategory(id: string) {
+//check if category exist
+    const categoryExist = await this.categoryRepository.getOne({ _id: id });
+    //fail case
+    if (!categoryExist) {
+      throw new BadRequestException('Category does not exist');
+    }
+    //success case
+    return  await this.categoryRepository.getOne({ _id: id });
+  }
+
+
   findAll() {
     return `This action returns all category`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
+ 
 
 
   remove(id: number) {

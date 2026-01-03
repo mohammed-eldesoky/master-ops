@@ -10,6 +10,7 @@ const generateMessage = (data) => ({
   otpSent: `${data} sent successfully`,
   verifyed: `${data} verified successfully`,
   refresh: `${data} refreshed successfully`,
+  fetched: `${data} fetched successfully`,
   failed: `${data} failed`,
 });
 
