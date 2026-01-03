@@ -20,6 +20,7 @@ token :{...generateMessage('Token')},
 product:{...generateMessage('Product')},
 otp:{...generateMessage('OTP')},
 passWord:{...generateMessage('Password')},
+category:{...generateMessage('Category')},
 
 
 }

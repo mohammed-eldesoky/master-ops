@@ -26,14 +26,18 @@ export class MongooseFilter implements ExceptionFilter {
     let errors: { field: any; message: string }[] = [];
 
     //2-handle mongoose validation error
-    if (exception instanceof MongooseError.ValidationError) {
-      status = HttpStatus.BAD_REQUEST;
-      message = 'Validation Failed';
-      errors = Object.values(exception.errors).map((err: any) => ({
-        field: err,
-        message: exception.errors[err].message,
-      }));
-    }
+   if (exception instanceof MongooseError.ValidationError) {
+  status = HttpStatus.BAD_REQUEST;
+  message = 'Validation Failed';
+
+  errors = Object.entries(exception.errors).map(
+    ([field, error]: [string, any]) => ({
+      field,
+      message: error.message,
+    }),
+  );
+}
+
     //3- invalid ObjectId error
     else if (exception instanceof MongooseError.CastError) {
       status = HttpStatus.BAD_REQUEST;

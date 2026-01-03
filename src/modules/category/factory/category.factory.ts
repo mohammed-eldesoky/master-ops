@@ -1,7 +1,9 @@
 import slugify from 'slugify';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { Category } from '../entities/category.entity';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CategoryFactory {
   constructor() {}
 

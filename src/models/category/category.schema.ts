@@ -28,7 +28,7 @@ export class Categorty {
       secure_url: { type: String, required: true },
       public_id: { type: String, required: true },
     },
-    required: true,
+    required: false,
   })
   logo: {
     secure_url: string;
