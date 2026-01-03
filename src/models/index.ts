@@ -12,3 +12,6 @@ export * from './modorator/modorator.repository';
 
 export * from './token/token.schema';
 export * from './token/token.repository';
+
+export * from './category/category.schema';
+export * from './category/category.repository';
