@@ -4,6 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategortyRepository } from 'src/models';
 import { Category } from './entities/category.entity';
 import strict from 'assert/strict';
+import { User } from 'src/common';
 
 @Injectable()
 export class CategoryService {
@@ -22,39 +23,51 @@ export class CategoryService {
     return await this.categoryRepository.create(category);
   }
 
-   //_______________________________2- update category _____________________________//
-async  update(id: string, category:Category) {
-//check if category exist
-    const categoryExist =await this.categoryRepository.getOne({ _id: id });
-    //fail case
-    if (!categoryExist) {
-      throw new BadRequestException('Category does not exist');
-    }
-    //success case
-  return await this.categoryRepository.update({ _id: id }, category);
-  }
-
-   //_______________________________3- get specific category _____________________________//
- async getCategory(id: string) {
-//check if category exist
+  //_______________________________2- update category _____________________________//
+  async update(id: string, category: Category) {
+    //check if category exist
     const categoryExist = await this.categoryRepository.getOne({ _id: id });
     //fail case
     if (!categoryExist) {
       throw new BadRequestException('Category does not exist');
     }
     //success case
-    return  await this.categoryRepository.getOne({ _id: id });
+    return await this.categoryRepository.update({ _id: id }, category);
   }
 
+  //_______________________________3- get specific category _____________________________//
+  async getCategory(id: string) {
+    //check if category exist
+    const categoryExist = await this.categoryRepository.getOne(
+      { _id: id },
+      {},
+      {
+        populate: [
+          { path: 'createdBy', select: 'userName id' },
+          { path: 'updatedBy', select: 'userName id' },
+        ],
+      },
+    );
+    //fail case
+    if (!categoryExist) {
+      throw new BadRequestException('Category does not exist');
+    }
+    //success case
+    return categoryExist;
+  }
 
   findAll() {
     return `This action returns all category`;
   }
-
- 
-
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  //_______________________________5- delete category _____________________________//
+ async deleteCategory (id: string) {
+    //check if category exist
+    const categoryExist = await this.categoryRepository.getOne({ _id: id });
+    //fail case
+    if (!categoryExist) {
+      throw new BadRequestException('Category does not exist');
+    }
+    //success case
+    return await this.categoryRepository.delete({ _id: id });
   }
 }

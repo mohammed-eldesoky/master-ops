@@ -75,9 +75,14 @@ export class CategoryController {
   findAll() {
     return this.categoryService.findAll();
   }
-
+  //_______________________________5- delete category _____________________________//
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  @Auth(['Admin', 'Modorator'])
+ async remove(@Param('id') id: string) {
+  await this.categoryService.deleteCategory(id);
+    return {
+      message: messages.category.deleted,
+      success: true
+    };
   }
 }
