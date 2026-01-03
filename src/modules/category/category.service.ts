@@ -5,6 +5,8 @@ import { CategortyRepository } from 'src/models';
 import { Category } from './entities/category.entity';
 import strict from 'assert/strict';
 import { User } from 'src/common';
+import { GetCategoriesQueryDto } from './dto/get.category-Dto';
+import { asyncWrapProviders } from 'async_hooks';
 
 @Injectable()
 export class CategoryService {
@@ -55,12 +57,56 @@ export class CategoryService {
     //success case
     return categoryExist;
   }
+  //_______________________________4- get all category _____________________________//
+  async findAll(QUERY: GetCategoriesQueryDto) {
+    const {
+      page = 1,
+      limit = 10,
+      sort = '-createdAt',
+      isActive,
+      search,
+    } = QUERY;
+    //pagination
+    const skip = (page - 1) * limit;
+    //filter
+    const filter: any = {};
+    if (isActive !== undefined) {
+      filter.isActive = isActive;
+    }
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+    // options
+    const options = {
+      skip,
+      limit,
+      sort,
+      populate: [
+        { path: 'createdBy', select: 'name email -_id' },
+        { path: 'updatedBy', select: 'name email -_id' },
+      ],
+    };
 
-  findAll() {
-    return `This action returns all category`;
+    const [categories, total] = await Promise.all([
+    this.categoryRepository.getAll(filter, {}, options),
+    this.categoryRepository.countDocuments(filter),
+  ]);
+    //success case
+    return {
+      data: categories,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
+      },
+    };
   }
   //_______________________________5- delete category _____________________________//
- async deleteCategory (id: string) {
+  async deleteCategory(id: string) {
     //check if category exist
     const categoryExist = await this.categoryRepository.getOne({ _id: id });
     //fail case

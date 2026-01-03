@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -13,8 +14,9 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Auth, messages, User } from 'src/common';
 import { CategoryFactory } from './factory/category.factory';
 
-@Controller('category')
+import { GetCategoriesQueryDto } from './dto/get.category-Dto';
 
+@Controller('category')
 export class CategoryController {
   constructor(
     private readonly categoryService: CategoryService,
@@ -39,7 +41,7 @@ export class CategoryController {
     };
   }
   //_______________________________2- update category _____________________________//
-@Auth(['Admin', 'Modorator'])
+  @Auth(['Admin', 'Modorator'])
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -63,26 +65,31 @@ export class CategoryController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const data =  await this.categoryService.getCategory(id);
+    const data = await this.categoryService.getCategory(id);
     return {
       message: messages.category.fetched,
       success: true,
       data: data,
     };
   }
-
+  //_______________________________4- get all category _____________________________//
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  async findAll(@Query() query: GetCategoriesQueryDto) {
+    const data = await this.categoryService.findAll(query);
+    return {
+      message: messages.category.fetched,
+      success: true,
+      data: data,
+    };
   }
   //_______________________________5- delete category _____________________________//
   @Delete(':id')
   @Auth(['Admin', 'Modorator'])
- async remove(@Param('id') id: string) {
-  await this.categoryService.deleteCategory(id);
+  async remove(@Param('id') id: string) {
+    await this.categoryService.deleteCategory(id);
     return {
       message: messages.category.deleted,
-      success: true
+      success: true,
     };
   }
 }
