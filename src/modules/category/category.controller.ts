@@ -20,7 +20,7 @@ export class CategoryController {
     private readonly categoryService: CategoryService,
     private readonly categoryFactory: CategoryFactory,
   ) {}
-
+  //_______________________________1- create category _____________________________//
   @Post()
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
@@ -37,6 +37,27 @@ export class CategoryController {
       data: data,
     };
   }
+  //_______________________________2- update category _____________________________//
+
+  @Patch(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+    @User() user: any,
+  ) {
+    const category = await this.categoryFactory.updateCategory(
+      id,
+      updateCategoryDto,
+      user,
+    );
+
+    const data = await this.categoryService.update(id, category);
+    return {
+      message: messages.category.updated,
+      success: true,
+      data: data,
+    };
+  }
 
   @Get()
   findAll() {
@@ -46,14 +67,6 @@ export class CategoryController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
-    return this.categoryService.update(+id, updateCategoryDto);
   }
 
   @Delete(':id')

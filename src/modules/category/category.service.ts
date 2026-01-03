@@ -21,6 +21,18 @@ export class CategoryService {
     return await this.categoryRepository.create(category);
   }
 
+   //_______________________________2- update category _____________________________//
+async  update(id: string, category:Category) {
+//check if category exist
+    const categoryExist =await this.categoryRepository.getOne({ _id: id });
+    //fail case
+    if (!categoryExist) {
+      throw new BadRequestException('Category does not exist');
+    }
+    //success case
+  return await this.categoryRepository.update({ _id: id }, category);
+  }
+
   findAll() {
     return `This action returns all category`;
   }
@@ -29,9 +41,7 @@ export class CategoryService {
     return `This action returns a #${id} category`;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
+
 
   remove(id: number) {
     return `This action removes a #${id} category`;
