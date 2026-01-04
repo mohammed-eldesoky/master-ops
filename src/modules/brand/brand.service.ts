@@ -59,7 +59,14 @@ export class BrandService {
   }
 
   //_________________________________5- delete brand _________________________________//
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+ async remove(id: string) {
+  //check if brand exist
+  const brandExist = await this.brandRepository.exist({ _id: id });
+  //fail case
+  if (!brandExist) {
+    throw new BadRequestException('brand does not exist');
+  }
+  //success case
+  return await this.brandRepository.delete({ _id: id });
   }
 }

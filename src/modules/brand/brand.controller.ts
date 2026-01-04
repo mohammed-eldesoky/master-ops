@@ -62,15 +62,20 @@ async  findOne(@Param('id') id: string) {
     };
   }
 
+  //_________________________________4- get all brand _________________________________//
   @Get()
   findAll() {
     return this.brandService.findAll();
   }
 
-
-
+//_________________________________5- delete brand _________________________________//
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.brandService.remove(+id);
+   @Auth(['Admin', 'Modorator'])
+ async remove(@Param('id') id: string) {
+await this.brandService.remove(id);
+    return {
+      message: messages.brand.deleted,
+      success: true,
+    };
   }
 }
