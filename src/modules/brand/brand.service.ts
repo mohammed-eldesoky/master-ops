@@ -21,18 +21,21 @@ constructor(private readonly brandRepository: BrandRepository) {}
 
   }
 
-  findAll() {
-    return `This action returns all brand`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
-  }
-
+  //_________________________________2- update brand _________________________________//
   update(id: number, updateBrandDto: UpdateBrandDto) {
     return `This action updates a #${id} brand`;
   }
 
+  //_________________________________3- get all brand _________________________________//
+  findAll() {
+    return `This action returns all brand`;
+  }
+  //_________________________________4- get specific brand _________________________________//
+  findOne(id: number) {
+    return `This action returns a #${id} brand`;
+  }
+
+  //_________________________________5- delete brand _________________________________//
   remove(id: number) {
     return `This action removes a #${id} brand`;
   }
