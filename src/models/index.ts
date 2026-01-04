@@ -15,3 +15,6 @@ export * from './token/token.repository';
 
 export * from './category/category.schema';
 export * from './category/category.repository';
+
+export * from './brand/brand.schema';
+export * from './brand/brand.repository';
