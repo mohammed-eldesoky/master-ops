@@ -3,6 +3,7 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { BrandRepository } from 'src/models';
 import { Brand } from './entities/brand.entity';
+import { GetBrandQueryDto } from './dto/get.brand-query';
 
 @Injectable()
 export class BrandService {
@@ -54,10 +55,53 @@ export class BrandService {
   }
 
   //_________________________________4- get all brand _________________________________//
-  findAll() {
-    return `This action returns all brand`;
-  }
+async findAll(QUERY: GetBrandQueryDto) {
+    const {
+      page = 1,
+      limit = 10,
+      sort = '-createdAt',
+      isActive,
+      search,
+    } = QUERY;
+    //pagination
+    const skip = (page - 1) * limit;
+    //filter
+    const filter: any = {};
+    if (isActive !== undefined) {
+      filter.isActive = isActive;
+    }
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+    // options
+    const options = {
+      skip,
+      limit,
+      sort,
+      populate: [
+        { path: 'createdBy', select: 'userName _id' },
+        { path: 'updatedBy', select: 'userName _id' },
+      ],
+    };
 
+    const [categories, total] = await Promise.all([
+    this.brandRepository.getAll(filter, {}, options),
+    this.brandRepository.countDocuments(filter),
+  ]);
+    //success case
+    return {
+      data: categories,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
+      },
+    };
+  }
   //_________________________________5- delete brand _________________________________//
  async remove(id: string) {
   //check if brand exist

@@ -75,11 +75,12 @@ export class CategoryController {
   //_______________________________4- get all category _____________________________//
   @Get()
   async findAll(@Query() query: GetCategoriesQueryDto) {
-    const data = await this.categoryService.findAll(query);
+    const result = await this.categoryService.findAll(query);
     return {
       message: messages.category.fetched,
       success: true,
-      data: data,
+      data: result.data,
+      pagination: result.pagination
     };
   }
   //_______________________________5- delete category _____________________________//
