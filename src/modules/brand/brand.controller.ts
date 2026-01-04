@@ -51,16 +51,23 @@ export class BrandController {
       data: data,
     };
   }
+  //_________________________________3- get specific brand _________________________________//
+  @Get(':id')
+async  findOne(@Param('id') id: string) {
+   const data = await this.brandService.findOne(id);
+    return {
+      message: messages.brand.fetched,
+      success: true,
+      data: data,
+    };
+  }
 
   @Get()
   findAll() {
     return this.brandService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.brandService.findOne(+id);
-  }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

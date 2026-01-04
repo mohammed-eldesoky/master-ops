@@ -85,8 +85,8 @@ export class CategoryService {
       limit,
       sort,
       populate: [
-        { path: 'createdBy', select: 'name email -_id' },
-        { path: 'updatedBy', select: 'name email -_id' },
+        { path: 'createdBy', select: 'userName _id' },
+        { path: 'updatedBy', select: 'userName _id' },
       ],
     };
 

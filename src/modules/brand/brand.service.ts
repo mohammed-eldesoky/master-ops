@@ -32,13 +32,30 @@ export class BrandService {
     return await this.brandRepository.update({ _id: id }, brand);
   }
 
-  //_________________________________3- get all brand _________________________________//
+  //_________________________________3- get specific brand _________________________________//
+  async findOne(id: string) {
+    //check if brand exist
+    const brandExist = await this.brandRepository.exist(
+      { _id: id },
+      {},
+      {
+        populate: [
+          { path: 'createdBy', select: 'userName _id' },
+          { path: 'updatedBy', select: 'userName  _id' },
+        ],
+      },
+    );
+    //fail case
+    if (!brandExist) {
+      throw new BadRequestException('brand does not exist');
+    }
+    //success case
+    return brandExist;
+  }
+
+  //_________________________________4- get all brand _________________________________//
   findAll() {
     return `This action returns all brand`;
-  }
-  //_________________________________4- get specific brand _________________________________//
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
   }
 
   //_________________________________5- delete brand _________________________________//
