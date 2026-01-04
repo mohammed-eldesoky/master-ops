@@ -6,24 +6,30 @@ import { Brand } from './entities/brand.entity';
 
 @Injectable()
 export class BrandService {
-constructor(private readonly brandRepository: BrandRepository) {}
+  constructor(private readonly brandRepository: BrandRepository) {}
 
-//_________________________________1- create brand _________________________________//
- async create(brand:Brand) {
-  //1- check if brand exist
-  const brandExist = await this.brandRepository.exist({slug:brand.slug});  
-  //fail case
-  if (brandExist) {
-    throw new BadRequestException('brand already exist');
-  }
-  //success case
-  return this.brandRepository.create(brand);
-
+  //_________________________________1- create brand _________________________________//
+  async create(brand: Brand) {
+    //1- check if brand exist
+    const brandExist = await this.brandRepository.exist({ slug: brand.slug });
+    //fail case
+    if (brandExist) {
+      throw new BadRequestException('brand already exist');
+    }
+    //success case
+    return this.brandRepository.create(brand);
   }
 
   //_________________________________2- update brand _________________________________//
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: string, brand: Brand) {
+    //1- check if brand exist
+    const brandExist = await this.brandRepository.exist({ slug: brand.slug });
+    //fail case
+    if (brandExist) {
+      throw new BadRequestException('brand already exist');
+    }
+    //success case
+    return await this.brandRepository.update({ _id: id }, brand);
   }
 
   //_________________________________3- get all brand _________________________________//
