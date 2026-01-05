@@ -41,3 +41,5 @@ export class Brand {
 }
 
 export const brandSchema = SchemaFactory.createForClass(Brand);
+brandSchema.index({ name: 1 });
+brandSchema.index({ isActive: 1, createdAt: -1 });

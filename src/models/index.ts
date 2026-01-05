@@ -18,3 +18,6 @@ export * from './category/category.repository';
 
 export * from './brand/brand.schema';
 export * from './brand/brand.repository';
+
+export * from './product/product.schema';
+export * from './product/product.repository';
