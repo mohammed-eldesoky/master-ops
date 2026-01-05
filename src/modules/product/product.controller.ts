@@ -63,14 +63,20 @@ const data = await this.productService.findOne(id);
     }
   }
 
+  //__________________________4- find all product ___________________________//
   @Get()
   findAll() {
     return this.productService.findAll();
   }
 
-
+//__________________________5- remove product ___________________________//
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  @Auth(['Admin', 'Modorator'])
+ async remove(@Param('id') id: string) {
+  await this.productService.remove(id);
+    return {
+      message: messages.product.deleted,
+      success: true
+    };
   }
 }

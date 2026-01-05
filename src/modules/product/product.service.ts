@@ -97,11 +97,19 @@ export class ProductService {
     return productExist;
   }
 
+//__________________________4- find all product ___________________________//
   findAll() {
     return `This action returns all product`;
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+//__________________________5- remove product ___________________________//
+  remove(id: string) {
+   // check if product exist
+   const productExist = this.productRepository.getOne({ _id: id });
+   //fail case
+   if (!productExist) {
+     throw new NotFoundException('product does not exist');
+   }
+   //success case
+   return this.productRepository.delete({ _id: id });
   }
 }
