@@ -47,42 +47,58 @@ export class ProductService {
   }
 
   //__________________________2- update product ___________________________//
-async update(id: string, updateData: Partial<Product>) {
-  const productExist = await this.productRepository.getOne({ _id: id });
+  async update(id: string, updateData: Partial<Product>) {
+    const productExist = await this.productRepository.getOne({ _id: id });
 
-  if (!productExist) {
-    throw new NotFoundException('product does not exist');
+    if (!productExist) {
+      throw new NotFoundException('product does not exist');
+    }
+
+    // stock logic (additive)
+    if (updateData.stock !== undefined) {
+      updateData.stock = productExist.stock + updateData.stock;
+    }
+
+    // merge colors
+    if (updateData.colors?.length) {
+      const colors = new Set(productExist.colors);
+      updateData.colors.forEach((c) => colors.add(c));
+      updateData.colors = [...colors];
+    }
+
+    // merge sizes
+    if (updateData.sizes?.length) {
+      const sizes = new Set(productExist.sizes);
+      updateData.sizes.forEach((s) => sizes.add(s));
+      updateData.sizes = [...sizes];
+    }
+
+    return await this.productRepository.update({ _id: id }, updateData);
   }
 
-  // stock logic (additive)
-  if (updateData.stock !== undefined) {
-    updateData.stock = productExist.stock + updateData.stock;
+  //__________________________3- find one product ___________________________//
+  async findOne(id: string) {
+    //check if product exist
+    const productExist = await this.productRepository.getOne(
+      { _id: id },
+      {},
+      {
+        populate: [
+          { path: 'createdBy', select: 'userName id' },
+          { path: 'updatedBy', select: 'userName id' },
+        ],
+      },
+    );
+    //fail case
+    if (!productExist) {
+      throw new NotFoundException('product does not exist');
+    }
+    //success case
+    return productExist;
   }
-
-  // merge colors
-  if (updateData.colors?.length) {
-    const colors = new Set(productExist.colors);
-    updateData.colors.forEach(c => colors.add(c));
-    updateData.colors = [...colors];
-  }
-
-  // merge sizes
-  if (updateData.sizes?.length) {
-    const sizes = new Set(productExist.sizes);
-    updateData.sizes.forEach(s => sizes.add(s));
-    updateData.sizes = [...sizes];
-  }
-
-  return await this.productRepository.update({ _id: id }, updateData);
-}
-
 
   findAll() {
     return `This action returns all product`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
   }
 
   remove(id: number) {

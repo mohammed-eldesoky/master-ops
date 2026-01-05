@@ -52,16 +52,22 @@ export class ProductController {
       data: data,
     };
   }
+  //__________________________3- find one product ___________________________//
+  @Get(':id')
+async   findOne(@Param('id') id: string) {
+const data = await this.productService.findOne(id);
+    return {
+      message: messages.product.fetched,
+      success: true,
+      data: data,
+    }
+  }
 
   @Get()
   findAll() {
     return this.productService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
