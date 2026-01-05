@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import devConfig from './config/env/dev.config';
 import { CategoryModule } from './modules/category/category.module';
 import { BrandModule } from './modules/brand/brand.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { BrandModule } from './modules/brand/brand.module';
     }),
     AuthModule,
     CategoryModule,
-    BrandModule
+    BrandModule,
+    ProductModule,
   ],
 
   controllers: [AppController],

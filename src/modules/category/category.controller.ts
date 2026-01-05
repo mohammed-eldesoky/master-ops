@@ -23,7 +23,7 @@ export class CategoryController {
     private readonly categoryFactory: CategoryFactory,
   ) {}
   //_______________________________1- create category _____________________________//
-  @Post()
+  @Post('/create')
   @Auth(['Admin', 'Modorator'])
   async create(
     @Body() createCategoryDto: CreateCategoryDto,

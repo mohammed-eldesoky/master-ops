@@ -15,5 +15,6 @@ import { CategoryFactory } from './factory/category.factory';
   ],
   controllers: [CategoryController],
   providers: [CategoryService, CategortyRepository,JwtService,CategoryFactory],
+  exports: [CategoryService],
 })
 export class CategoryModule {}

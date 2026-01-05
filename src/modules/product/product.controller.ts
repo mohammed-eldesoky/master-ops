@@ -1,15 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Auth, messages, User } from 'src/common';
+import { ProductFactory } from './factory/product.factory';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
-
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  constructor(
+    private readonly productService: ProductService,
+    private readonly productFactory: ProductFactory,
+  ) {}
+  //__________________________1- create product ___________________________//
+  @Post('/create')
+    @Auth(['Admin', 'Modorator'])
+  async create(@Body() createProductDto: CreateProductDto, @User() user: any) {
+    const product = this.productFactory.createProduct(createProductDto, user);
+    const data = await this.productService.create(product, user);
+    return {
+      message: messages.product.created,
+      success: true,
+      data: data,
+    };
   }
 
   @Get()

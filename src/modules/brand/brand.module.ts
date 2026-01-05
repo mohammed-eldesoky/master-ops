@@ -11,5 +11,6 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [UserMongoModule,MongooseModule.forFeature([{ name: Brand.name, schema: brandSchema }])],
   controllers: [BrandController],
   providers: [BrandService,BrandFactory,BrandRepository,JwtService],
+  exports:[BrandService]
 })
 export class BrandModule {}

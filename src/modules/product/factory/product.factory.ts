@@ -2,6 +2,9 @@ import slugify from 'slugify';
 import { Product } from '../entities/product.entity';
 import { CreateProductDto } from './../dto/create-product.dto';
 import { Types } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+
+@Injectable()
 export class ProductFactory {
   constructor() {}
 
