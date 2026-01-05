@@ -21,12 +21,33 @@ export class ProductController {
   ) {}
   //__________________________1- create product ___________________________//
   @Post('/create')
-    @Auth(['Admin', 'Modorator'])
+  @Auth(['Admin', 'Modorator'])
   async create(@Body() createProductDto: CreateProductDto, @User() user: any) {
     const product = this.productFactory.createProduct(createProductDto, user);
     const data = await this.productService.create(product, user);
     return {
       message: messages.product.created,
+      success: true,
+      data: data,
+    };
+  }
+
+  //__________________________2- update product ___________________________//
+  @Patch(':id')
+  @Auth(['Admin', 'Modorator'])
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @User() user: any,
+  ) {
+    const product = await this.productFactory.updateProduct(
+      updateProductDto,
+      user,
+      id,
+    );
+    const data = await this.productService.update(id, product);
+    return {
+      message: messages.product.updated,
       success: true,
       data: data,
     };
@@ -40,11 +61,6 @@ export class ProductController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
   }
 
   @Delete(':id')

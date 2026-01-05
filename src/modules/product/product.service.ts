@@ -46,16 +46,43 @@ export class ProductService {
     return await this.productRepository.create(product);
   }
 
+  //__________________________2- update product ___________________________//
+async update(id: string, updateData: Partial<Product>) {
+  const productExist = await this.productRepository.getOne({ _id: id });
+
+  if (!productExist) {
+    throw new NotFoundException('product does not exist');
+  }
+
+  // stock logic (additive)
+  if (updateData.stock !== undefined) {
+    updateData.stock = productExist.stock + updateData.stock;
+  }
+
+  // merge colors
+  if (updateData.colors?.length) {
+    const colors = new Set(productExist.colors);
+    updateData.colors.forEach(c => colors.add(c));
+    updateData.colors = [...colors];
+  }
+
+  // merge sizes
+  if (updateData.sizes?.length) {
+    const sizes = new Set(productExist.sizes);
+    updateData.sizes.forEach(s => sizes.add(s));
+    updateData.sizes = [...sizes];
+  }
+
+  return await this.productRepository.update({ _id: id }, updateData);
+}
+
+
   findAll() {
     return `This action returns all product`;
   }
 
   findOne(id: number) {
     return `This action returns a #${id} product`;
-  }
-
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
   }
 
   remove(id: number) {

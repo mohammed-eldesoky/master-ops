@@ -54,7 +54,11 @@ export class AbstractRepository<T> {
       lean: true;
     },
   ) {
-    return await this.model.findOneAndUpdate(filter, update, options);
+    return await this.model.findOneAndUpdate(filter, update,  {
+      new: true,   
+      runValidators: true,
+      ...options,
+    },);
   }
 
   //______________________6- delete Document ______________________//
