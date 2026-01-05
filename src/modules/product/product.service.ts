@@ -9,6 +9,7 @@ import { ProductRepository } from 'src/models';
 import { Product } from './entities/product.entity';
 import { CategoryService } from '../category/category.service';
 import { BrandService } from '../brand/brand.service';
+import { GetProductQueryDto } from './dto/get-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -98,18 +99,62 @@ export class ProductService {
   }
 
 //__________________________4- find all product ___________________________//
-  findAll() {
-    return `This action returns all product`;
-  }
+   async findAll(QUERY: GetProductQueryDto) {
+     const {
+       page = 1,
+       limit = 10,
+       sort = '-createdAt',
+       isActive,
+       search,
+     } = QUERY;
+     //pagination
+     const skip = (page - 1) * limit;
+     //filter
+     const filter: any = {};
+     if (isActive !== undefined) {
+       filter.isActive = isActive;
+     }
+     if (search) {
+       filter.$or = [
+         { name: { $regex: search, $options: 'i' } },
+         { description: { $regex: search, $options: 'i' } },
+       ];
+     }
+     // options
+     const options = {
+       skip,
+       limit,
+       sort,
+       populate: [
+         { path: 'createdBy', select: 'userName _id' },
+         { path: 'updatedBy', select: 'userName _id' },
+       ],
+     };
+ 
+     const [products, total] = await Promise.all([
+     this.productRepository.getAll(filter, {}, options),
+     this.productRepository.countDocuments(filter),
+   ]);
+     //success case
+     return {
+       data: products,
+       pagination: {
+         page,
+         limit,
+         total,
+         totalPage: Math.ceil(total / limit),
+       },
+     };
+   }
 //__________________________5- remove product ___________________________//
-  remove(id: string) {
+ async remove(id: string) {
    // check if product exist
-   const productExist = this.productRepository.getOne({ _id: id });
+   const productExist =await this.productRepository.getOne({ _id: id });
    //fail case
    if (!productExist) {
      throw new NotFoundException('product does not exist');
    }
    //success case
-   return this.productRepository.delete({ _id: id });
+   return await this.productRepository.delete({ _id: id });
   }
 }

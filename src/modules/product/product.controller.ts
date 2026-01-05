@@ -6,12 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Auth, messages, User } from 'src/common';
 import { ProductFactory } from './factory/product.factory';
+import { GetProductQueryDto } from './dto/get-product.dto';
 
 @Controller('product')
 export class ProductController {
@@ -54,29 +56,35 @@ export class ProductController {
   }
   //__________________________3- find one product ___________________________//
   @Get(':id')
-async   findOne(@Param('id') id: string) {
-const data = await this.productService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const data = await this.productService.findOne(id);
     return {
       message: messages.product.fetched,
       success: true,
       data: data,
-    }
+    };
   }
 
   //__________________________4- find all product ___________________________//
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  async findAll(@Query() query: GetProductQueryDto) {
+    const result = await this.productService.findAll(query);
+    return {
+      message: messages.product.fetched,
+      success: true,
+      data: result.data,
+      pagination: result.pagination,
+    };
   }
 
-//__________________________5- remove product ___________________________//
+  //__________________________5- remove product ___________________________//
   @Delete(':id')
   @Auth(['Admin', 'Modorator'])
- async remove(@Param('id') id: string) {
-  await this.productService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.productService.remove(id);
     return {
       message: messages.product.deleted,
-      success: true
+      success: true,
     };
   }
 }

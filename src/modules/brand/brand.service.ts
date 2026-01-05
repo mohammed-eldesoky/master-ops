@@ -87,13 +87,13 @@ async findAll(QUERY: GetBrandQueryDto) {
       ],
     };
 
-    const [categories, total] = await Promise.all([
+    const [brands, total] = await Promise.all([
     this.brandRepository.getAll(filter, {}, options),
     this.brandRepository.countDocuments(filter),
   ]);
     //success case
     return {
-      data: categories,
+      data: brands,
       pagination: {
         page,
         limit,

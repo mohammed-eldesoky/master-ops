@@ -69,7 +69,7 @@ export class BrandController {
   async findAll(@Query() query: GetBrandQueryDto) {
     const result = await this.brandService.findAll(query);
     return {
-      message: messages.category.fetched,
+      message: messages.brand.fetched,
       success: true,
       data:result.data,
       pagination:result.pagination
