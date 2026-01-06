@@ -1,11 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
+import { DepartmentRepository } from 'src/models';
+import { Department } from './entities/department.entity';
 
 @Injectable()
 export class DepartmentService {
-  create(createDepartmentDto: CreateDepartmentDto) {
-    return 'This action adds a new department';
+  constructor(private readonly departmentRepository: DepartmentRepository) {}
+
+  //___________________________1-create department _________________________________//
+  async create(department: Department) {
+    //check if department already exist
+    const existingDepartment = await this.departmentRepository.exist({
+      name: department.name,
+    });
+    //fail case
+    if (existingDepartment) {
+      throw new BadRequestException('Department already exists');
+    }
+    //success case
+    return await this.departmentRepository.create(department);
   }
 
   findAll() {
