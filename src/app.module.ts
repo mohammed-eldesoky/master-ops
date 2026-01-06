@@ -8,6 +8,7 @@ import devConfig from './config/env/dev.config';
 import { CategoryModule } from './modules/category/category.module';
 import { BrandModule } from './modules/brand/brand.module';
 import { ProductModule } from './modules/product/product.module';
+import { DepartmentModule } from './modules/department/department.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProductModule } from './modules/product/product.module';
     CategoryModule,
     BrandModule,
     ProductModule,
+    DepartmentModule
   ],
 
   controllers: [AppController],
