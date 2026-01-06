@@ -21,3 +21,6 @@ export * from './brand/brand.repository';
 
 export * from './product/product.schema';
 export * from './product/product.repository';
+
+export * from './department/department.schema';
+export * from './department/department.repository';
