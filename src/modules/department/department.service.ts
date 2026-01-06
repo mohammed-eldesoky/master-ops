@@ -22,6 +22,8 @@ export class DepartmentService {
     return await this.departmentRepository.create(department);
   }
 
+  //___________________________2-update department _________________________________//
+  
   findAll() {
     return `This action returns all department`;
   }
