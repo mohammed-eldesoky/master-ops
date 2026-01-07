@@ -58,19 +58,32 @@ export class DepartmentController {
       data: data,
     };
   }
+  //___________________________3-get one department _________________________________//
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const data = await this.departmentService.findOne(id);
+    return {
+      message: messages.department.fetched,
+      success: true,
+      data: data,
+    };
+  }
 
   @Get()
   findAll() {
     return this.departmentService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.departmentService.findOne(+id);
-  }
-
+  //___________________________5-delete department _________________________________//
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.departmentService.remove(+id);
+  @Auth(['Admin', 'Modorator'])
+ async  remove(@Param('id') id: string) {
+  await this.departmentService.remove(id);
+    return {
+      message: messages.department.deleted,
+      success: true,
+ 
+    };
   }
 }

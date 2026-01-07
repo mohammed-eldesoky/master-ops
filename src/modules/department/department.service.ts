@@ -50,15 +50,35 @@ export class DepartmentService {
     return await this.departmentRepository.update({ _id: id }, department);
   }
 
+  //___________________________3-find one department _________________________________//
+  async findOne(id: string) {
+    const department = await this.departmentRepository.getOne(
+      { _id: id },
+      {},
+      {
+        populate: [
+          { path: 'createdBy', select: 'userName id' },
+          { path: 'updatedBy', select: 'userName id' },
+        ],
+      },
+    );
+    if (!department) {
+      throw new NotFoundException('Department not found');
+    }
+    return department;
+  }
+
   findAll() {
     return `This action returns all department`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} department`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} department`;
+  //___________________________5-delete department _________________________________//
+  async remove(id: string) {
+    const department = await this.departmentRepository.exist({ _id: id });
+    if (!department) {
+      throw new NotFoundException('Department not found');
+    }
+    // delete department
+    return await this.departmentRepository.delete({ _id: id });
   }
 }
