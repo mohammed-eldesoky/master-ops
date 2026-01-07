@@ -34,24 +34,44 @@ export class EmployeeController {
       data: data,
     };
   }
+  //___________________________2- Update Employee _________________________________//
+  @Patch(':id')
+  @Auth(['Admin', 'Modorator'])
+  async update(
+    @Param('id') id: string,
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @User() user: any,
+  ) {
+    const employee = await this.employeeFactory.update(
+      id,
+      updateEmployeeDto,
+      user,
+    );
+    const data = await this.employeeService.update(id, employee);
+    return {
+      message: messages.employee.updated,
+      success: true,
+      data: data,
+    };
+  }
+
+//___________________________3- Get one Employee _________________________________//
+  @Get(':id')
+ async findOne(@Param('id') id: string) {
+   const data =  await this.employeeService.findOne(id);
+    return {
+      message: messages.employee.fetched,
+      success: true,
+      data: data,
+    };
+  }
+  //___________________________4- Get All Employee _________________________________//
 
   @Get()
   findAll() {
     return this.employeeService.findAll();
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.employeeService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateEmployeeDto: UpdateEmployeeDto,
-  ) {
-    return this.employeeService.update(+id, updateEmployeeDto);
-  }
+//___________________________5- Remove Employee _________________________________//
 
   @Delete(':id')
   remove(@Param('id') id: string) {
