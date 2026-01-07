@@ -6,12 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { DepartmentService } from './department.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { Auth, messages, User } from 'src/common';
 import { DepartmentFactory } from './factory/department.factory';
+import { GetdepartmentQueryDto } from './dto/get-department.dto';
 
 @Controller('department')
 export class DepartmentController {
@@ -69,10 +71,17 @@ export class DepartmentController {
       data: data,
     };
   }
-
+//___________________________4-get all department _________________________________//
   @Get()
-  findAll() {
-    return this.departmentService.findAll();
+ async findAll(@Query() query: GetdepartmentQueryDto) {
+    const data = await this.departmentService.findAll(query );
+    return {
+      message: messages.department.fetched,
+      success: true,
+      data: data.data,
+      pagination: data.pagination
+    }
+
   }
 
   //___________________________5-delete department _________________________________//

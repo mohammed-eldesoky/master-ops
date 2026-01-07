@@ -9,6 +9,7 @@ import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { DepartmentRepository } from 'src/models';
 import { Department } from './entities/department.entity';
 import strict from 'assert/strict';
+import { GetdepartmentQueryDto } from './dto/get-department.dto';
 
 @Injectable()
 export class DepartmentService {
@@ -67,11 +68,55 @@ export class DepartmentService {
     }
     return department;
   }
+//___________________________4-find all department _________________________________//
 
-  findAll() {
-    return `This action returns all department`;
+  async findAll(QUERY: GetdepartmentQueryDto) {
+    const {
+      page = 1,
+      limit = 10,
+      sort = '-createdAt',
+      isActive,
+      search,
+    } = QUERY;
+    //pagination
+    const skip = (page - 1) * limit;
+    //filter
+    const filter: any = {};
+    if (isActive !== undefined) {
+      filter.isActive = isActive;
+    }
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+      ];
+    }
+    // options
+    const options = {
+      skip,
+      limit,
+      sort,
+      populate: [
+        { path: 'createdBy', select: 'userName _id' },
+        { path: 'updatedBy', select: 'userName _id' },
+      ],
+    };
+
+    const [categories, total] = await Promise.all([
+    this.departmentRepository.getAll(filter, {}, options),
+    this.departmentRepository.countDocuments(filter),
+  ]);
+    //success case
+    return {
+      data: categories,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPage: Math.ceil(total / limit),
+      },
+    };
   }
-
   //___________________________5-delete department _________________________________//
   async remove(id: string) {
     const department = await this.departmentRepository.exist({ _id: id });
