@@ -20,3 +20,10 @@ export enum DISCOUNT_TYPE {
   fixed_amount = 'fixed_amount',
   percentage = 'percentage',
 }
+
+export enum EMPLOYEE_STATUS {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  TERMINATED = 'TERMINATED',
+}
