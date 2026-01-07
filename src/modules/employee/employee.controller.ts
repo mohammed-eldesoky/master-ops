@@ -6,12 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeFactory } from './factory/employee.factory';
 import { Auth, messages, User } from 'src/common';
+import { GetEmployeeQueryDto } from './dto/get-query-dto';
 
 @Controller('employee')
 export class EmployeeController {
@@ -55,10 +57,10 @@ export class EmployeeController {
     };
   }
 
-//___________________________3- Get one Employee _________________________________//
+  //___________________________3- Get one Employee _________________________________//
   @Get(':id')
- async findOne(@Param('id') id: string) {
-   const data =  await this.employeeService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const data = await this.employeeService.findOne(id);
     return {
       message: messages.employee.fetched,
       success: true,
@@ -68,13 +70,24 @@ export class EmployeeController {
   //___________________________4- Get All Employee _________________________________//
 
   @Get()
-  findAll() {
-    return this.employeeService.findAll();
+  async findAll(@Query() query: GetEmployeeQueryDto) {
+    const data = await this.employeeService.findAll(query);
+    return {
+      message: messages.employee.fetched,
+      success: true,
+      data: data.data,
+      pagination: data.pagination,
+    };
   }
-//___________________________5- Remove Employee _________________________________//
+  //___________________________5- Remove Employee _________________________________//
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeeService.remove(+id);
+  @Auth(['Admin', 'Modorator'])
+  async remove(@Param('id') id: string) {
+    await this.employeeService.remove(id);
+    return {
+      message: messages.employee.deleted,
+      success: true,
+    };
   }
 }
