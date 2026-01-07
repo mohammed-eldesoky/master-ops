@@ -10,6 +10,7 @@ import { BrandModule } from './modules/brand/brand.module';
 import { ProductModule } from './modules/product/product.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { EmployeeModule } from './modules/employee/employee.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { EmployeeModule } from './modules/employee/employee.module';
     BrandModule,
     ProductModule,
     DepartmentModule,
-    EmployeeModule
+    EmployeeModule,
+    UsersModule
   ],
 
   controllers: [AppController],
