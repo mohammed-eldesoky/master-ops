@@ -1,10 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeRepository } from 'src/models';
 import { Employee } from './entities/employee.entity';
 import { GetEmployeeQueryDto } from './dto/get-query-dto';
-import { EMPLOYEE_ROLE } from 'src/common';
+import { EMPLOYEE_ROLE, EMPLOYEE_STATUS } from 'src/common';
 import { AddEmployeeRoleDto, RemoveEmployeeRoleDto } from './dto/role.dto';
 
 @Injectable()
@@ -121,10 +125,7 @@ export class EmployeeService {
     return await this.employeeRepository.update({ _id: id }, existingEmployee);
   }
   //___________________________7- Remove Employee Role _________________________________//
-  async removeRole(
-    id: string,
-    user: any,
-  ) {
+  async removeRole(id: string, user: any) {
     // check if employee exist
     const existingEmployee = await this.employeeRepository.exist({ _id: id });
     if (!existingEmployee) {
@@ -133,5 +134,34 @@ export class EmployeeService {
     existingEmployee.role = EMPLOYEE_ROLE.EMPLOYEE;
     existingEmployee.updatedBy = user._id;
     return await this.employeeRepository.update({ _id: id }, existingEmployee);
+  }
+  //___________________________8- deactivate Employee  _________________________________//
+  async deactivate(id: string, user: any) {
+    const employee = await this.employeeRepository.getOne({ _id: id });
+
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    employee.isActive = false;
+    employee.status = EMPLOYEE_STATUS.TERMINATED;
+    employee.terminationDate = new Date();
+    employee.updatedBy = user._id;
+
+    return await this.employeeRepository.update({ _id: id }, employee);
+  }
+  //___________________________9- activate Employee  _________________________________//
+  async activate(id: string, user: any) {
+    const employee = await this.employeeRepository.getOne({ _id: id });
+
+    if (!employee) {
+      throw new NotFoundException('Employee not found');
+    }
+
+    employee.isActive = true;
+    employee.status = EMPLOYEE_STATUS.ACTIVE;
+    employee.updatedBy = user._id;
+
+    return await this.employeeRepository.update({ _id: id }, employee);
   }
 }

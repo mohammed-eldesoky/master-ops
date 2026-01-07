@@ -12,6 +12,8 @@ const generateMessage = (data) => ({
   refresh: `${data} refreshed successfully`,
   fetched: `${data} fetched successfully`,
   failed: `${data} failed`,
+  activated: `${data} activated successfully`,
+  deactivated: `${data} deactivated successfully`,
 });
 
 export const messages = {

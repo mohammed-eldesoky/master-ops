@@ -94,7 +94,7 @@ export class EmployeeController {
 
   //___________________________6- Add Employee Role _________________________________//
   @Patch(':id/role')
-  @Auth(['Admin', 'Modorator'])
+  @Auth(['Admin'])
   async addRole(
     @Param('id') id: string,
     @Body() role: AddEmployeeRoleDto,
@@ -110,7 +110,7 @@ export class EmployeeController {
 
   //___________________________7- Remove Employee Role _________________________________//
   @Patch(':id/remove-role')
-  @Auth(['Admin', 'Modorator'])
+  @Auth(['Admin'])
   async removeRole(@Param('id') id: string, @User() user: any) {
     const data = await this.employeeService.removeRole(id, user);
     return {
@@ -119,4 +119,35 @@ export class EmployeeController {
       data: data,
     };
   }
+  //___________________________8- deactivate Employee  _________________________________//
+  @Patch(':id/deactivate')
+  @Auth(['Admin', 'Modorator'])
+async deactivateEmployee(
+  @Param('id') id: string,
+  @User() user: any,
+) {
+  const data = await this.employeeService.deactivate(id, user);
+
+  return {
+    success: true,
+    message: 'Employee deactivated successfully',
+    data,
+  };
+}
+//___________________________9- activate Employee  _________________________________//
+@Patch(':id/activate')
+@Auth(['Admin', 'Modorator'])
+async activateEmployee(
+  @Param('id') id: string,
+  @User() user: any,
+) {
+  const data = await this.employeeService.activate(id, user);
+
+  return {
+    success: true,
+    message: messages.employee.activated,
+    data,
+  };
+}
+
 }
