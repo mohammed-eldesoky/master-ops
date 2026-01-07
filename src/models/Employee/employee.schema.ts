@@ -47,12 +47,11 @@ export class Employee {
   jobTitle: string;
 
   @Prop({
-    type: [String],
+    type: String,
     enum: EMPLOYEE_ROLE,
-    default: [],
-    index: true,
+    required: true,
   })
-  roles: EMPLOYEE_ROLE[]; // HR, MANAGER, ACCOUNTANT ...
+  role: EMPLOYEE_ROLE; // HR, MANAGER, ACCOUNTANT ...
 
   @Prop({
     type: String,

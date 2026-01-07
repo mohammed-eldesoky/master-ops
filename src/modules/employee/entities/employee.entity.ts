@@ -16,7 +16,7 @@ export class Employee {
 
   jobTitle: string;
 
-  roles: EMPLOYEE_ROLE[]; // HR, MANAGER, ACCOUNTANT ...
+  role?: EMPLOYEE_ROLE; // HR, MANAGER, ACCOUNTANT ...
 
   status: EMPLOYEE_STATUS;
 

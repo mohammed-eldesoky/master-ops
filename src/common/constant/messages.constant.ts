@@ -23,6 +23,7 @@ otp:{...generateMessage('OTP')},
 passWord:{...generateMessage('Password')},
 category:{...generateMessage('Category')},
 brand:{...generateMessage('Brand')},
+employee:{...generateMessage('Employee')},
 
 
 }

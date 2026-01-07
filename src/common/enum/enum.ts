@@ -1,19 +1,16 @@
-
-
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female'
+  MALE = 'male',
+  FEMALE = 'female',
 }
 export enum USER_AGENT {
-    local = 'local',
-    google = 'google',
-    facebook = 'facebook',
-  
+  local = 'local',
+  google = 'google',
+  facebook = 'facebook',
 }
 
 export enum TOKEN_TYPE {
-    REFRESH = 'refresh',
-    ACCESS = 'access',
+  REFRESH = 'refresh',
+  ACCESS = 'access',
 }
 
 export enum DISCOUNT_TYPE {
@@ -31,4 +28,7 @@ export enum EMPLOYEE_ROLE {
   HR = 'HR',
   MANAGER = 'MANAGER',
   ACCOUNTANT = 'ACCOUNTANT',
+  ADMIN = 'ADMIN',
+  MODORATOR = 'MODORATOR',
+  EMPLOYEE = 'EMPLOYEE',
 }
