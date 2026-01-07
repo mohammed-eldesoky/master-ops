@@ -24,3 +24,6 @@ export * from './product/product.repository';
 
 export * from './department/department.schema';
 export * from './department/department.repository';
+
+export * from './Employee/employee.schema';
+export * from './Employee/employee.repository';
