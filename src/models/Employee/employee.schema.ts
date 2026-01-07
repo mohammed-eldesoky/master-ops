@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { SchemaTypes, Types } from "mongoose";
-import { EMPLOYEE_STATUS } from "src/common";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { SchemaTypes, Types } from 'mongoose';
+import { EMPLOYEE_STATUS, EMPLOYEE_ROLE } from 'src/common';
 
 @Schema({
   timestamps: true,
@@ -12,13 +12,7 @@ export class Employee {
   readonly _id: Types.ObjectId;
 
   //________________ Basic Info _________________//
-  @Prop({ type: String, required: true, trim: true })
-  firstName: string;
-
-  @Prop({ type: String, required: true, trim: true })
-  lastName: string;
-
-  @Prop({ type: String, trim: true })
+  @Prop({ type: String, trim: true, required: true })
   fullName: string;
 
   @Prop({
@@ -27,6 +21,7 @@ export class Employee {
     unique: true,
     lowercase: true,
     trim: true,
+    index: true,
   })
   email: string;
 
@@ -35,6 +30,7 @@ export class Employee {
     required: true,
     unique: true,
     trim: true,
+    index: true,
   })
   phone: string;
 
@@ -52,10 +48,11 @@ export class Employee {
 
   @Prop({
     type: [String],
+    enum: EMPLOYEE_ROLE,
     default: [],
     index: true,
   })
-  roles: string[]; // HR, MANAGER, ACCOUNTANT ...
+  roles: EMPLOYEE_ROLE[]; // HR, MANAGER, ACCOUNTANT ...
 
   @Prop({
     type: String,
@@ -65,13 +62,16 @@ export class Employee {
   })
   status: EMPLOYEE_STATUS;
 
-  @Prop({ type: Date, required: true })
+  @Prop({
+    type: Date,
+    default: Date.now,
+  })
   hireDate: Date;
 
   @Prop({ type: Date })
   terminationDate?: Date;
 
-  //________________ Salary Definition _________________//
+  //________________ Salary Definition (used by Payroll Service) _________________//
   @Prop({
     type: {
       base: { type: Number, required: true, min: 0 },
@@ -81,7 +81,7 @@ export class Employee {
     },
     _id: false,
   })
-  salary: {
+  salaryProfile: {
     base: number;
     allowance: number;
     insurance: number;
@@ -100,3 +100,18 @@ export class Employee {
 }
 
 export const EmployeeSchema = SchemaFactory.createForClass(Employee);
+
+//________________ Indexes _________________//
+EmployeeSchema.index({ email: 1 });
+EmployeeSchema.index({ phone: 1 });
+EmployeeSchema.index({ departmentId: 1 });
+EmployeeSchema.index({ status: 1 });
+EmployeeSchema.index({ roles: 1 });
+EmployeeSchema.index({ isActive: 1 });
+
+// Text search for dashboard & filters
+EmployeeSchema.index({
+  fullName: 'text',
+  email: 'text',
+  phone: 'text',
+});
