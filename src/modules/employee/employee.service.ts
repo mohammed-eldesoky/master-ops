@@ -114,24 +114,24 @@ export class EmployeeService {
     return await this.employeeRepository.delete({ _id: id });
   }
   //___________________________6- Add Employee Role _________________________________//
-  async addRole(id: string, addEmployeeRoleDto: AddEmployeeRoleDto, user: any) {
+  async updatePostion (id: string, addEmployeeRoleDto: AddEmployeeRoleDto, user: any) {
     // check if employee exist
     const existingEmployee = await this.employeeRepository.exist({ _id: id });
     if (!existingEmployee) {
       throw new ConflictException('Employee not found');
     }
-    existingEmployee.role = addEmployeeRoleDto.role;
+    existingEmployee.jobTitle = addEmployeeRoleDto.jobTitle;
     existingEmployee.updatedBy = user._id;
     return await this.employeeRepository.update({ _id: id }, existingEmployee);
   }
   //___________________________7- Remove Employee Role _________________________________//
-  async removeRole(id: string, user: any) {
+  async removePostion(id: string, user: any) {
     // check if employee exist
     const existingEmployee = await this.employeeRepository.exist({ _id: id });
     if (!existingEmployee) {
       throw new ConflictException('Employee not found');
     }
-    existingEmployee.role = EMPLOYEE_ROLE.EMPLOYEE;
+    existingEmployee.jobTitle = EMPLOYEE_ROLE.EMPLOYEE;
     existingEmployee.updatedBy = user._id;
     return await this.employeeRepository.update({ _id: id }, existingEmployee);
   }

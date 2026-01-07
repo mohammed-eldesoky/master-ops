@@ -18,9 +18,7 @@ export class EmployeeFactory {
 
     //________________ Job Info _________________//
     employee.departmentId = new Types.ObjectId(createEmployeeDto.departmentId);
-    employee.jobTitle = createEmployeeDto.jobTitle;
-
-    employee.role =  EMPLOYEE_ROLE.EMPLOYEE;
+  employee.jobTitle= createEmployeeDto.jobTitle
 
     employee.status = EMPLOYEE_STATUS.ACTIVE;
 
@@ -50,14 +48,14 @@ export class EmployeeFactory {
     const newDepartmentId =
       updateEmployeeDto.departmentId || employeeExist.departmentId;
     const newJobTitle = updateEmployeeDto.jobTitle || employeeExist.jobTitle;
-    const newRole =  employeeExist.role|| EMPLOYEE_ROLE.EMPLOYEE;
+  
 
     employee.fullName = newName;
     employee.email = newEmail;
     employee.phone = newPhone;
     employee.departmentId = newDepartmentId;
     employee.jobTitle = newJobTitle;
-    employee.role = newRole;
+ 
 
     employee.updatedBy = user._id;
     return employee;

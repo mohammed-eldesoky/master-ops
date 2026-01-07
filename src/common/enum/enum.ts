@@ -28,7 +28,5 @@ export enum EMPLOYEE_ROLE {
   HR = 'Hr',
   MANAGER = 'Manager',
   ACCOUNTANT = 'Accountant',
-  ADMIN = 'Admin',
-  MODORATOR = 'Modorator',
   EMPLOYEE = 'Employee',
 }

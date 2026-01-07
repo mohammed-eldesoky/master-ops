@@ -1,14 +1,16 @@
-import { IsEnum, IsNotEmpty } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, MinLength } from "class-validator";
 import { EMPLOYEE_ROLE } from "src/common";
 
 export class AddEmployeeRoleDto {
-  @IsEnum(EMPLOYEE_ROLE)
+ @IsString()
   @IsNotEmpty()
-  role: EMPLOYEE_ROLE;
+  @MinLength(2, { message: 'jobTitle must be at least 2 characters long' })
+  jobTitle: string;
 }
 
 export class RemoveEmployeeRoleDto {
     @IsNotEmpty()
-  @IsEnum(EMPLOYEE_ROLE)
-  role: EMPLOYEE_ROLE;
+ @IsString()
+  @MinLength(2, { message: 'jobTitle must be at least 2 characters long' })
+  jobTitle: string;
 }

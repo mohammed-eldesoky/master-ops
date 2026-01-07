@@ -95,12 +95,12 @@ export class EmployeeController {
   //___________________________6- Add Employee Role _________________________________//
   @Patch(':id/role')
   @Auth(['Admin'])
-  async addRole(
+  async updatePostion(
     @Param('id') id: string,
     @Body() role: AddEmployeeRoleDto,
     @User() user: any,
   ) {
-    const data = await this.employeeService.addRole(id, role, user);
+    const data = await this.employeeService.updatePostion(id, role, user);
     return {
       message: messages.employee.updated,
       success: true,
@@ -111,8 +111,8 @@ export class EmployeeController {
   //___________________________7- Remove Employee Role _________________________________//
   @Patch(':id/remove-role')
   @Auth(['Admin'])
-  async removeRole(@Param('id') id: string, @User() user: any) {
-    const data = await this.employeeService.removeRole(id, user);
+  async removePostion(@Param('id') id: string, @User() user: any) {
+    const data = await this.employeeService.removePostion(id, user);
     return {
       message: messages.employee.updated,
       success: true,

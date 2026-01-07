@@ -46,12 +46,6 @@ export class Employee {
   @Prop({ type: String, required: true, trim: true })
   jobTitle: string;
 
-  @Prop({
-    type: String,
-    enum: EMPLOYEE_ROLE,
-    required: true,
-  })
-  role: EMPLOYEE_ROLE; // HR, MANAGER, ACCOUNTANT ...
 
   @Prop({
     type: String,

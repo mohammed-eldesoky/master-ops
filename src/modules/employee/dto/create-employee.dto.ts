@@ -22,6 +22,7 @@ export class CreateEmployeeDto {
 
   @IsString()
   @IsNotEmpty()
+    @MinLength(2, { message: 'jobTitle must be at least 2 characters long' })
   jobTitle: string;
 
 
