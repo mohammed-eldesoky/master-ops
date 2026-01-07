@@ -71,23 +71,6 @@ export class Employee {
   @Prop({ type: Date })
   terminationDate?: Date;
 
-  //________________ Salary Definition (used by Payroll Service) _________________//
-  @Prop({
-    type: {
-      base: { type: Number, required: true, min: 0 },
-      allowance: { type: Number, default: 0, min: 0 },
-      insurance: { type: Number, default: 0, min: 0 },
-      tax: { type: Number, default: 0, min: 0 },
-    },
-    _id: false,
-  })
-  salaryProfile: {
-    base: number;
-    allowance: number;
-    insurance: number;
-    tax: number;
-  };
-
   //________________ System Fields _________________//
   @Prop({ type: Boolean, default: true, index: true })
   isActive: boolean;
