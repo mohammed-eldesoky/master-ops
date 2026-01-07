@@ -34,7 +34,5 @@ export class UpdateEmployeeDto {
   @IsString()
   jobTitle: string;
 
-  @IsOptional()
-  @IsEnum(EMPLOYEE_ROLE, { each: true })
-  role?: EMPLOYEE_ROLE;
+
 }

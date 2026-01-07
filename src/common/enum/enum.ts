@@ -19,16 +19,16 @@ export enum DISCOUNT_TYPE {
 }
 
 export enum EMPLOYEE_STATUS {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  SUSPENDED = 'SUSPENDED',
-  TERMINATED = 'TERMINATED',
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  SUSPENDED = 'suspended',
+  TERMINATED = 'terminated',
 }
 export enum EMPLOYEE_ROLE {
-  HR = 'HR',
-  MANAGER = 'MANAGER',
-  ACCOUNTANT = 'ACCOUNTANT',
-  ADMIN = 'ADMIN',
-  MODORATOR = 'MODORATOR',
-  EMPLOYEE = 'EMPLOYEE',
+  HR = 'Hr',
+  MANAGER = 'Manager',
+  ACCOUNTANT = 'Accountant',
+  ADMIN = 'Admin',
+  MODORATOR = 'Modorator',
+  EMPLOYEE = 'Employee',
 }

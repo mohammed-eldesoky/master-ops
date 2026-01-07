@@ -25,10 +25,5 @@ export class CreateEmployeeDto {
   jobTitle: string;
 
 
-  @IsOptional()
-  @IsEnum(EMPLOYEE_ROLE, { each: true })
-  role?: EMPLOYEE_ROLE;
-
-
 }
 

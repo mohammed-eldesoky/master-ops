@@ -20,7 +20,7 @@ export class EmployeeFactory {
     employee.departmentId = new Types.ObjectId(createEmployeeDto.departmentId);
     employee.jobTitle = createEmployeeDto.jobTitle;
 
-    employee.role = createEmployeeDto.role || EMPLOYEE_ROLE.EMPLOYEE;
+    employee.role =  EMPLOYEE_ROLE.EMPLOYEE;
 
     employee.status = EMPLOYEE_STATUS.ACTIVE;
 
@@ -50,7 +50,7 @@ export class EmployeeFactory {
     const newDepartmentId =
       updateEmployeeDto.departmentId || employeeExist.departmentId;
     const newJobTitle = updateEmployeeDto.jobTitle || employeeExist.jobTitle;
-    const newRole = updateEmployeeDto.role || employeeExist.role;
+    const newRole =  employeeExist.role|| EMPLOYEE_ROLE.EMPLOYEE;
 
     employee.fullName = newName;
     employee.email = newEmail;
@@ -62,5 +62,5 @@ export class EmployeeFactory {
     employee.updatedBy = user._id;
     return employee;
   }
-  
+
 }

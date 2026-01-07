@@ -4,6 +4,8 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeRepository } from 'src/models';
 import { Employee } from './entities/employee.entity';
 import { GetEmployeeQueryDto } from './dto/get-query-dto';
+import { EMPLOYEE_ROLE } from 'src/common';
+import { AddEmployeeRoleDto, RemoveEmployeeRoleDto } from './dto/role.dto';
 
 @Injectable()
 export class EmployeeService {
@@ -84,9 +86,9 @@ export class EmployeeService {
     };
 
     const [employee, total] = await Promise.all([
-    this.employeeRepository.getAll(filter, {}, options),
-    this.employeeRepository.countDocuments(filter),
-  ]);
+      this.employeeRepository.getAll(filter, {}, options),
+      this.employeeRepository.countDocuments(filter),
+    ]);
     //success case
     return {
       data: employee,
@@ -106,5 +108,30 @@ export class EmployeeService {
       throw new ConflictException('Employee not found');
     }
     return await this.employeeRepository.delete({ _id: id });
+  }
+  //___________________________6- Add Employee Role _________________________________//
+  async addRole(id: string, addEmployeeRoleDto: AddEmployeeRoleDto, user: any) {
+    // check if employee exist
+    const existingEmployee = await this.employeeRepository.exist({ _id: id });
+    if (!existingEmployee) {
+      throw new ConflictException('Employee not found');
+    }
+    existingEmployee.role = addEmployeeRoleDto.role;
+    existingEmployee.updatedBy = user._id;
+    return await this.employeeRepository.update({ _id: id }, existingEmployee);
+  }
+  //___________________________7- Remove Employee Role _________________________________//
+  async removeRole(
+    id: string,
+    user: any,
+  ) {
+    // check if employee exist
+    const existingEmployee = await this.employeeRepository.exist({ _id: id });
+    if (!existingEmployee) {
+      throw new ConflictException('Employee not found');
+    }
+    existingEmployee.role = EMPLOYEE_ROLE.EMPLOYEE;
+    existingEmployee.updatedBy = user._id;
+    return await this.employeeRepository.update({ _id: id }, existingEmployee);
   }
 }

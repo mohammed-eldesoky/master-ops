@@ -14,6 +14,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeFactory } from './factory/employee.factory';
 import { Auth, messages, User } from 'src/common';
 import { GetEmployeeQueryDto } from './dto/get-query-dto';
+import { AddEmployeeRoleDto } from './dto/role.dto';
 
 @Controller('employee')
 export class EmployeeController {
@@ -88,6 +89,34 @@ export class EmployeeController {
     return {
       message: messages.employee.deleted,
       success: true,
+    };
+  }
+
+  //___________________________6- Add Employee Role _________________________________//
+  @Patch(':id/role')
+  @Auth(['Admin', 'Modorator'])
+  async addRole(
+    @Param('id') id: string,
+    @Body() role: AddEmployeeRoleDto,
+    @User() user: any,
+  ) {
+    const data = await this.employeeService.addRole(id, role, user);
+    return {
+      message: messages.employee.updated,
+      success: true,
+      data: data,
+    };
+  }
+
+  //___________________________7- Remove Employee Role _________________________________//
+  @Patch(':id/remove-role')
+  @Auth(['Admin', 'Modorator'])
+  async removeRole(@Param('id') id: string, @User() user: any) {
+    const data = await this.employeeService.removeRole(id, user);
+    return {
+      message: messages.employee.updated,
+      success: true,
+      data: data,
     };
   }
 }
