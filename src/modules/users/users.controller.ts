@@ -36,6 +36,8 @@ export class UsersController {
   //   };
   // }
 
+  
+
   @Get()
 @Auth(['Admin','Modorator'])
  async findAll(@Query() query: GetUsersQueryDto) {
@@ -47,10 +49,16 @@ export class UsersController {
   pagination:data.pagination
  }
   }
-
+//_______________________________1- get specific user ______________________________
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Auth(['Admin','Modorator'])
+ async findOne(@Param('id') id: string) {
+   const data = await this.usersService.findOne(id);
+   return {
+     message: messages.user.fetched,
+     success: true,
+     data,
+   };
   }
 
   @Delete(':id')

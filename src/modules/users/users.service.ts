@@ -21,7 +21,7 @@ export class UsersService {
   //   //update user
   //   return await this.userRepository.update({ _id: id}, userEntity);
   // }
-
+//_____________________________2-get all users _______________________________
 async getAllUsers(query: GetUsersQueryDto) {
   const {
     page = '1',
@@ -90,9 +90,16 @@ async getAllUsers(query: GetUsersQueryDto) {
   };
 }
 
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+//_____________________________3-get specific user _______________________________
+ async findOne(id: string) {
+   //check if user exist
+   const userExist = await this.userRepository.getOne({ _id: id },{},{});
+   //fail case
+   if (!userExist) {
+     throw new Error('User does not exist');
+   }
+   //success case
+   return userExist;
   }
 
   remove(id: number) {
