@@ -102,6 +102,18 @@ async getAllUsers(query: GetUsersQueryDto) {
    return userExist;
   }
 
+//active user
+async activate(id: string,isActive: boolean) {
+  //check if user exist
+  const userExist = await this.userRepository.getOne({ _id: id });
+  //fail case
+  if (!userExist) {
+    throw new Error('User does not exist');
+  }
+
+  //update user
+  return await this.userRepository.update({ _id: id }, { isActive});
+}
   remove(id: number) {
     return `This action removes a #${id} user`;
   }

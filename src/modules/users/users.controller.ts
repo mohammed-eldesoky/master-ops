@@ -61,6 +61,26 @@ export class UsersController {
    };
   }
 
+
+  @Patch(':id/activate')
+ @Auth(['Admin','Modorator'])
+async activate(@Param('id') id: string) {
+  await this.usersService.activate(id, true);
+  return {
+    message: messages.user.activated,
+    success: true,
+  };
+}
+
+@Patch(':id/deactivate')
+ @Auth(['Admin','Modorator'])
+async deactivate(@Param('id') id: string) {
+  await this.usersService.activate(id, false);
+  return {
+    message: messages.user.deactivated,
+    success: true,
+  };
+}
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
