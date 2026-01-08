@@ -28,6 +28,9 @@ export class User {
   @Prop({ type: Date, default: null })
   otpExpiration: Date;
 
+  @Prop({ type: Date, required: false })
+  dob?: Date;
+
   @Prop({ type: String, enum: Gender, required: false })
   gender?: Gender;
 

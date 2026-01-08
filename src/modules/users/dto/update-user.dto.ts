@@ -17,10 +17,6 @@ export class UpdateUserDto {
   @MaxLength(20)
   userName: string;
 
-  @IsEmail()
-  @IsOptional()
-  email: string;
-
   @Type(() => Date)
   @IsDate()
   @IsOptional()

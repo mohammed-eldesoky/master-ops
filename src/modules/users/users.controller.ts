@@ -1,28 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Auth, messages, User } from 'src/common';
+import { GetUsersQueryDto } from './dto/get-user.dto';
 
-@Controller('users')
+
+
+@Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
 
-  @Post()
+  ) {}
 
+  // @Patch('/:id')
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() updateUserDto: UpdateUserDto,
+  //   @User() user: any,
+  // ) {
+  //   const updatedUser = await this.userFactory.update(id, updateUserDto, user);
+  //   const data = await this.usersService.update(id, updatedUser);
+  //   return {
+  //     message: messages.user.updated,
+  //     success: true,
+  //     data,
+  //   };
+  // }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+@Auth(['Admin','Modorator'])
+ async findAll(@Query() query: GetUsersQueryDto) {
+ const data =await this.usersService.getAllUsers(query);
+ return{
+  message:messages.user.fetched,
+  success:true,
+  data:data.users,
+  pagination:data.pagination
+ }
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
